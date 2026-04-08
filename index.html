@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub Repo Card Demo</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ghrc-font: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --ghrc-bg: #f6f8fa;
+      --ghrc-surface: #ffffff;
+      --ghrc-border: #d0d7de;
+      --ghrc-text: #24292f;
+      --ghrc-text-muted: #57606a;
+      --ghrc-code-bg: #f6f8fa;
+      --ghrc-code-text: #24292f;
+      --ghrc-accent: #58a6ff;
+      --ghrc-btn-bg: #238636;
+      --ghrc-btn-hover: #2ea043;
+      --ghrc-btn-active: #1a7f2e;
+      --ghrc-space-1: 0.25rem;
+      --ghrc-space-2: 0.5rem;
+      --ghrc-space-3: 0.75rem;
+      --ghrc-space-4: 1rem;
+      --ghrc-space-5: 1.5rem;
+      --ghrc-radius-sm: 4px;
+      --ghrc-radius-md: 8px;
+      --ghrc-width-md: 560px;
+      --ghrc-transition-fast: 0.15s;
+      --ghrc-font-size-md: 0.875rem;
+      --ghrc-font-size-lg: 1rem;
+      --ghrc-font-size-xl: 1.125rem;
+      --ghrc-font-weight-medium: 500;
+      --ghrc-font-weight-semibold: 600;
+      --ghrc-btn-text: #ffffff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ghrc-bg: #0d1117;
+        --ghrc-surface: #161b22;
+        --ghrc-border: #30363d;
+        --ghrc-text: #e6edf3;
+        --ghrc-text-muted: #8b949e;
+        --ghrc-code-bg: #0b0f14;
+        --ghrc-code-text: #e6edf3;
+      }
+    }
+
+    :root[data-theme="light"] {
+      --ghrc-bg: #f6f8fa;
+      --ghrc-surface: #ffffff;
+      --ghrc-border: #d0d7de;
+      --ghrc-text: #24292f;
+      --ghrc-text-muted: #57606a;
+      --ghrc-code-bg: #f6f8fa;
+      --ghrc-code-text: #24292f;
+    }
+
+    :root[data-theme="dark"] {
+      --ghrc-bg: #0d1117;
+      --ghrc-surface: #161b22;
+      --ghrc-border: #30363d;
+      --ghrc-text: #e6edf3;
+      --ghrc-text-muted: #8b949e;
+      --ghrc-code-bg: #0b0f14;
+      --ghrc-code-text: #e6edf3;
+    }
+
+    body {
+      font-family: var(--ghrc-font);
+      background: var(--ghrc-bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: calc(var(--ghrc-space-5) + var(--ghrc-space-3));
+      box-sizing: border-box;
+    }
+
+    h1 {
+      color: var(--ghrc-text);
+      font-size: var(--ghrc-font-size-xl);
+      font-weight: var(--ghrc-font-weight-medium);
+      margin-bottom: var(--ghrc-space-2);
+      letter-spacing: 0.02em;
+    }
+
+    .lede {
+      color: var(--ghrc-text-muted);
+      width: 100%;
+      max-width: var(--ghrc-width-md);
+      margin: 0 0 var(--ghrc-space-5);
+      line-height: 1.5;
+    }
+
+    .search-form {
+      display: flex;
+      gap: var(--ghrc-space-2);
+      width: 100%;
+      max-width: var(--ghrc-width-md);
+      margin-bottom: var(--ghrc-space-4);
+    }
+
+    .controls {
+      display: flex;
+      gap: var(--ghrc-space-2);
+      width: 100%;
+      max-width: var(--ghrc-width-md);
+      margin-bottom: var(--ghrc-space-4);
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: var(--ghrc-space-3) var(--ghrc-space-4);
+      font-size: var(--ghrc-font-size-md);
+      font-family: inherit;
+      background: var(--ghrc-surface);
+      border: 1px solid var(--ghrc-border);
+      border-radius: var(--ghrc-radius-md);
+      color: var(--ghrc-text);
+      outline: none;
+      transition: border-color var(--ghrc-transition-fast);
+    }
+
+    .search-input::placeholder {
+      color: var(--ghrc-text-muted);
+    }
+
+    .search-input:focus {
+      border-color: var(--ghrc-accent);
+    }
+
+    .search-btn {
+      padding: var(--ghrc-space-3) var(--ghrc-space-4);
+      font-size: var(--ghrc-font-size-md);
+      font-weight: var(--ghrc-font-weight-semibold);
+      background: var(--ghrc-btn-bg);
+      color: var(--ghrc-btn-text);
+      border: none;
+      border-radius: var(--ghrc-radius-md);
+      cursor: pointer;
+      transition: background var(--ghrc-transition-fast);
+      white-space: nowrap;
+    }
+
+    .search-btn:hover {
+      background: var(--ghrc-btn-hover);
+    }
+
+    .search-btn:active {
+      background: var(--ghrc-btn-active);
+    }
+
+    .toggle-btn {
+      padding: var(--ghrc-space-2) var(--ghrc-space-3);
+      font-size: var(--ghrc-font-size-md);
+      font-weight: var(--ghrc-font-weight-medium);
+      font-family: inherit;
+      color: var(--ghrc-text);
+      background: var(--ghrc-surface);
+      border: 1px solid var(--ghrc-border);
+      border-radius: var(--ghrc-radius-md);
+      cursor: pointer;
+      transition:
+        background var(--ghrc-transition-fast),
+        color var(--ghrc-transition-fast),
+        border-color var(--ghrc-transition-fast);
+    }
+
+    .toggle-btn:hover {
+      border-color: var(--ghrc-accent);
+    }
+
+    .toggle-btn[aria-pressed="true"] {
+      background: var(--ghrc-accent);
+      border-color: var(--ghrc-accent);
+      color: var(--ghrc-bg);
+    }
+
+    .demo-stack {
+      width: 100%;
+      max-width: var(--ghrc-width-md);
+      display: grid;
+      gap: var(--ghrc-space-4);
+    }
+
+    .usage-panel {
+      background: var(--ghrc-surface);
+      border: 1px solid var(--ghrc-border);
+      border-radius: var(--ghrc-radius-md);
+      padding: var(--ghrc-space-4);
+      color: var(--ghrc-text);
+      display: grid;
+      gap: var(--ghrc-space-3);
+    }
+
+    .usage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--ghrc-space-3);
+      flex-wrap: wrap;
+    }
+
+    .usage-title {
+      margin: 0;
+      font-size: var(--ghrc-font-size-xl);
+      font-weight: var(--ghrc-font-weight-semibold);
+      align-self: center;
+    }
+
+    .usage-copy {
+      flex-shrink: 0;
+    }
+
+    .usage-text {
+      margin: 0;
+      color: var(--ghrc-text-muted);
+      line-height: 1.5;
+    }
+
+    .usage-code {
+      width: 100%;
+      min-height: 220px;
+      resize: vertical;
+      padding: var(--ghrc-space-3);
+      box-sizing: border-box;
+      border: 1px solid var(--ghrc-border);
+      border-radius: var(--ghrc-radius-md);
+      background: var(--ghrc-code-bg);
+      color: var(--ghrc-code-text);
+      font: 0.85rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    .usage-code:focus {
+      outline: 2px solid var(--ghrc-accent);
+      outline-offset: 2px;
+    }
+
+    .usage-hint {
+      margin: 0;
+      color: var(--ghrc-text-muted);
+      font-size: 0.8125rem;
+      line-height: 1.5;
+    }
+
+    .badge-editor {
+      width: 100%;
+      max-width: var(--ghrc-width-md);
+      display: grid;
+      gap: var(--ghrc-space-2);
+      margin-bottom: var(--ghrc-space-4);
+    }
+
+    .badge-label {
+      color: var(--ghrc-text);
+      font-size: var(--ghrc-font-size-md);
+      font-weight: var(--ghrc-font-weight-semibold);
+    }
+
+    .badge-input {
+      width: 100%;
+      min-height: 110px;
+      resize: vertical;
+      padding: var(--ghrc-space-3) var(--ghrc-space-4);
+      box-sizing: border-box;
+      font-size: 0.85rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      background: var(--ghrc-surface);
+      border: 1px solid var(--ghrc-border);
+      border-radius: var(--ghrc-radius-md);
+      color: var(--ghrc-text);
+      outline: none;
+      transition: border-color var(--ghrc-transition-fast);
+    }
+
+    .badge-input:focus {
+      border-color: var(--ghrc-accent);
+    }
+
+    .badge-help {
+      margin: 0;
+      color: var(--ghrc-text-muted);
+      font-size: 0.8125rem;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 640px) {
+      .search-form {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>GitHub Repo Card — Web Component</h1>
+  <p class="lede">
+    A standalone custom element that fetches GitHub repository data directly in the browser.
+  </p>
+  <form class="search-form" id="repo-search-form">
+    <input class="search-input" id="repo-search-input" type="text" placeholder="owner/repository  (e.g. facebook/react)"
+      aria-label="GitHub repository" value="agenttoolkit/altk-evolve" />
+    <button class="search-btn" type="submit">Search</button>
+  </form>
+  <div class="controls">
+    <button class="toggle-btn" id="toggle-compact" type="button" aria-pressed="false">
+      Compact mode
+    </button>
+    <button class="toggle-btn" id="toggle-theme" type="button" aria-pressed="false">
+      Theme: Auto
+    </button>
+  </div>
+  <div class="badge-editor">
+    <label class="badge-label" for="badge-markup-input">Badge children</label>
+    <textarea class="badge-input" id="badge-markup-input" spellcheck="false" aria-label="Badge child markup">
+    <span>Python</span>
+    <span>Apache 2.0</span>
+    <img alt="Static Badge" src="https://img.shields.io/badge/source-dreams-black?style=flat-square">
+    <a href="https://illeatmyhat.github.io/github-repo-card/" target="_blank" rel="noopener">Demo</a></textarea>
+    <p class="badge-help">
+      Add any child markup you want to slot into the card: simple text badges, links, or image shields.
+    </p>
+  </div>
+  <div class="demo-stack">
+    <github-repo-card repo="agenttoolkit/altk-evolve">
+      <span>Python</span>
+      <span>0BSD</span>
+      <a href="https://illeatmyhat.github.io/github-repo-card/" target="_blank" rel="noopener">Demo</a>
+    </github-repo-card>
+
+    <section class="usage-panel" aria-labelledby="usage-title">
+      <h2 class="usage-title" id="usage-title">Get Started</h2>
+      <textarea class="usage-code" id="usage-snippet" readonly spellcheck="false"
+        aria-label="Starter snippet for GitHub Repo Card"></textarea>
+      <button class="search-btn usage-copy" id="copy-snippet" type="button">Copy snippet</button>
+    </section>
+  </div>
+
+  <script src="./github-repo-card.js"></script>
+  <script>
+    const repoCard = document.querySelector("github-repo-card");
+    const form = document.getElementById("repo-search-form");
+    const input = document.getElementById("repo-search-input");
+    const toggleCompact = document.getElementById("toggle-compact");
+    const toggleTheme = document.getElementById("toggle-theme");
+    const badgeMarkupInput = document.getElementById("badge-markup-input");
+    const usageSnippet = document.getElementById("usage-snippet");
+    const copySnippet = document.getElementById("copy-snippet");
+    const SCRIPT_SRC = "https://illeatmyhat.github.io/github-repo-card/github-repo-card.js";
+    const SEARCH_DEBOUNCE_MS = 600;
+    const THEME_MODES = ["auto", "light", "dark"];
+    let themeMode = "auto";
+    let syncTimeoutId = null;
+
+    const syncToggleButton = (button, active, label) => {
+      button.setAttribute("aria-pressed", String(active));
+      button.textContent = `${active ? "Disable" : "Enable"} ${label}`;
+    };
+
+    const getBadgeMarkup = () => badgeMarkupInput.value.trim();
+
+    const syncThemeButton = () => {
+      toggleTheme.setAttribute("aria-pressed", String(themeMode !== "auto"));
+      toggleTheme.textContent = `Theme: ${themeMode.charAt(0).toUpperCase()}${themeMode.slice(1)}`;
+    };
+
+    const applyThemeMode = () => {
+      if (themeMode === "auto") {
+        document.documentElement.removeAttribute("data-theme");
+      } else {
+        document.documentElement.setAttribute("data-theme", themeMode);
+      }
+      repoCard.theme = themeMode;
+      syncThemeButton();
+    };
+
+    const getSnippet = (repo, compact, badgeMarkup, theme) => {
+      const compactAttribute = compact ? " compact" : "";
+      const themeAttribute = theme !== "auto" ? ` theme="${theme}"` : "";
+      const openTag = `<github-repo-card repo="${repo}"${compactAttribute}${themeAttribute}>`;
+
+      if (!badgeMarkup) {
+        return [
+          `<script src="${SCRIPT_SRC}"><\/script>`,
+          "",
+          `${openTag}</github-repo-card>`
+        ].join("\n");
+      }
+
+      const indentedBadges = badgeMarkup
+        .split("\n")
+        .map((line) => `  ${line}`)
+        .join("\n");
+
+      return [
+        `<script src="${SCRIPT_SRC}"><\/script>`,
+        "",
+        openTag,
+        indentedBadges,
+        `</github-repo-card>`
+      ].join("\n");
+    };
+
+    const syncSnippet = () => {
+      const repo = input.value.trim();
+      const badgeMarkup = getBadgeMarkup();
+      if (!repo) {
+        usageSnippet.value = [
+          `<script src="${SCRIPT_SRC}"><\/script>`,
+          "",
+          `<github-repo-card repo="owner/repository"${themeMode !== "auto" ? ` theme="${themeMode}"` : ""}>`,
+          badgeMarkup ? badgeMarkup.split("\n").map((line) => `  ${line}`).join("\n") : "  <span>Python</span>",
+          '</github-repo-card>'
+        ].join("\n");
+        return;
+      }
+
+      usageSnippet.value = getSnippet(repo, repoCard.compact, badgeMarkup, themeMode);
+    };
+
+    const syncBadgeChildren = () => {
+      repoCard.innerHTML = badgeMarkupInput.value;
+    };
+
+    const syncRepoCard = () => {
+      const repo = input.value.trim();
+      if (!repo) return;
+
+      repoCard.setAttribute("repo", repo);
+    };
+
+    const scheduleRepoCardSync = () => {
+      window.clearTimeout(syncTimeoutId);
+      syncTimeoutId = window.setTimeout(() => {
+        syncRepoCard();
+      }, SEARCH_DEBOUNCE_MS);
+    };
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      window.clearTimeout(syncTimeoutId);
+      syncSnippet();
+      syncRepoCard();
+    });
+
+    input.addEventListener("input", () => {
+      syncSnippet();
+      scheduleRepoCardSync();
+    });
+
+    badgeMarkupInput.addEventListener("input", () => {
+      syncBadgeChildren();
+      syncSnippet();
+    });
+
+    toggleCompact.addEventListener("click", () => {
+      repoCard.compact = !repoCard.compact;
+      syncToggleButton(
+        toggleCompact,
+        repoCard.compact,
+        "compact mode"
+      );
+      syncSnippet();
+    });
+
+    toggleTheme.addEventListener("click", () => {
+      const currentIndex = THEME_MODES.indexOf(themeMode);
+      themeMode = THEME_MODES[(currentIndex + 1) % THEME_MODES.length];
+      applyThemeMode();
+      syncSnippet();
+    });
+
+    copySnippet.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(usageSnippet.value);
+        copySnippet.textContent = "Copied";
+      } catch {
+        usageSnippet.focus();
+        usageSnippet.select();
+        copySnippet.textContent = "Press Cmd/Ctrl+C";
+      }
+
+      window.setTimeout(() => {
+        copySnippet.textContent = "Copy snippet";
+      }, 1600);
+    });
+
+    syncToggleButton(toggleCompact, repoCard.compact, "compact mode");
+    applyThemeMode();
+    syncBadgeChildren();
+    syncSnippet();
+    syncRepoCard();
+  </script>
+
+</body>
+
+</html>
